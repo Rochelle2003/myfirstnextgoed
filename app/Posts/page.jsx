@@ -1,46 +1,33 @@
-"use client";
+'use client';
+import React from 'react';
 
-import { useEffect, useState } from "react";
-import { supabase } from "../Lib/supabaseClient";
-import Link from "next/link";
+const data = [
+  { id: 1, title: "Card 1", content: "Dit is kaart 1" },
+  { id: 2, title: "Card 2", content: "Dit is kaart 2" },
+  { id: 3, title: "Card 3", content: "Dit is kaart 3" }
+];
 
-export default function Posts() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      let { data, error } = await supabase.from("posts").select("*");
-      if (error) {
-        console.error("Fout bij ophalen van posts:", error.message);
-      } else {
-        setPosts(data);
-      }
-      setLoading(false);
-    };
-
-    fetchPosts();
-  }, []);
-
+export default function PostsPage() {
   return (
-    <main className="container">
-      <h1>📢 Blogposts</h1>
-      <Link href="/">⬅️ Terug naar Home</Link>
-
-      {loading ? <p>Loading posts...</p> : null}
-
-      <ul>
-        {posts.length > 0 ? (
-          posts.map((post) => (
-            <li key={post.id}>
-              <h3>{post.title}</h3>
-              <p>{post.content}</p>
-            </li>
-          ))
-        ) : (
-          <p>Geen posts gevonden.</p>
-        )}
-      </ul>
+    <main style={{ padding: "2rem" }}>
+      <h1>JSON Cards</h1>
+      <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+        {data.map((item) => (
+          <div
+            key={item.id}
+            style={{
+              border: "1px solid #ccc",
+              padding: "1rem",
+              borderRadius: "8px",
+              width: "200px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+            }}
+          >
+            <h2>{item.title}</h2>
+            <p>{item.content}</p>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
