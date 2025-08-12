@@ -1,18 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-let supabase;
+let supabase = null;
 
-if (supabaseUrl && supabaseAnonKey) {
-  supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Alleen client maken als beide environment variables aanwezig zijn
+if (supabaseUrl && supabaseAnonKey && supabaseUrl !== '' && supabaseAnonKey !== '') {
+  try {
+    supabase = createClient(supabaseUrl, supabaseAnonKey);
+  } catch (error) {
+    console.error('Error creating Supabase client:', error);
+  }
 } else {
-  // Tijdens build (zoals op _not-found) zijn env-variabelen soms niet beschikbaar
   if (typeof window === 'undefined') {
-    console.warn('⚠️ Supabase keys missing during build (zoals _not-found). Skipping client creation.');
+    // Server-side: log warning maar gooi geen error
+    console.warn('⚠️ Supabase credentials missing during build. Client will not be available.');
   } else {
-    throw new Error('Supabase credentials zijn verplicht!');
+    // Client-side: log warning maar gooi geen error
+    console.warn('⚠️ Supabase credentials missing. Some features may not work.');
   }
 }
 
