@@ -115,7 +115,10 @@ export default function Admin() {
         if (supabase) {
           const { error } = await supabase
             .from('blog_posts')
-            .update(formData)
+            .update({
+              ...formData,
+              author: demoUser?.name || 'Admin' // Zorg dat author altijd is ingevuld
+            })
             .eq('id', editingPost.id);
 
           if (error) throw error;
@@ -129,21 +132,25 @@ export default function Admin() {
         }
       } else {
         // Maak nieuwe post
-        const newPost = {
-          ...formData,
-          id: Date.now().toString(),
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        };
-
         if (supabase) {
+          // Voor Supabase: laat de database automatisch UUID en timestamps genereren
           const { error } = await supabase
             .from('blog_posts')
-            .insert([newPost]);
+            .insert([{
+              ...formData,
+              author: demoUser?.name || 'Admin' // Zorg dat author altijd is ingevuld
+            }]);
 
           if (error) throw error;
         } else {
-          // Demo mode: voeg toe aan lokale state
+          // Demo mode: voeg toe aan lokale state met lokale ID
+          const newPost = {
+            ...formData,
+            id: Date.now().toString(),
+            author: demoUser?.name || 'Admin', // Zorg dat author altijd is ingevuld
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          };
           setPosts(prev => [newPost, ...prev]);
         }
       }
@@ -165,7 +172,7 @@ export default function Admin() {
       }
     } catch (error) {
       console.error('Error saving post:', error);
-      alert('Er is een fout opgetreden bij het opslaan van de post.');
+      alert(`Er is een fout opgetreden bij het opslaan van de post: ${error.message}`);
     }
   };
 
