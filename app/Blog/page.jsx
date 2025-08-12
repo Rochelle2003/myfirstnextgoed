@@ -7,6 +7,7 @@ export default function Blog() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [dataSource, setDataSource] = useState('local'); // 'local' of 'supabase'
+  const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
     fetchPosts();
@@ -61,112 +62,181 @@ export default function Blog() {
     }
   };
 
+  const categories = [
+    'UX Research', 'UI Design', 'User Testing', 'Design Systems', 
+    'Case Studies', 'Design Tools', 'Accessibility', 'Mobile UX'
+  ];
+
+  const filteredPosts = selectedCategory 
+    ? posts.filter(post => post.category === selectedCategory)
+    : posts;
+
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-purple-600 font-medium">UX Design Studio laden...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">📝 Next.js Blog</h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Lees de laatste updates, artikelen en tutorials over Next.js en web development.
-        </p>
-        
-        {/* Data source indicator */}
-        <div className="mt-4">
-          {dataSource === 'local' ? (
-            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-100 text-yellow-800">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
-              </svg>
-              Demo Mode - Lokale Data
-            </div>
-          ) : (
-            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              Live Database - Supabase
-            </div>
-          )}
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white py-20">
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <div className="mb-6">
+            <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-white/20 backdrop-blur-sm border border-white/30">
+              📚 UX Design Blog
+            </span>
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            UX Design Kennis
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-pink-300">
+              & Inzichten
+            </span>
+          </h1>
+          <p className="text-xl text-purple-100 max-w-3xl mx-auto leading-relaxed">
+            Duik in de wereld van UX design met artikelen, case studies en best practices 
+            van ervaren designers en experts.
+          </p>
         </div>
       </div>
 
-      {/* Blog posts grid */}
-      {posts.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">Nog geen blog posts beschikbaar.</p>
-          <p className="text-gray-400 mt-2">
-            {dataSource === 'local' 
-              ? 'Demo data kon niet worden geladen.' 
-              : 'Log in als admin om posts toe te voegen.'
-            }
-          </p>
+      {/* Category Filter */}
+      <div className="max-w-6xl mx-auto px-4 py-12">
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+            🎯 Filter op Categorie
+          </h2>
+          <div className="flex flex-wrap justify-center gap-3">
+            <button
+              onClick={() => setSelectedCategory('')}
+              className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
+                selectedCategory === '' 
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              }`}
+            >
+              🌟 Alle Categorieën
+            </button>
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setSelectedCategory(category)}
+                className={`px-6 py-3 rounded-xl font-medium transition-all duration-200 ${
+                  selectedCategory === category 
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post) => (
-            <article key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-              {post.image_url && (
-                <div className="h-48 bg-gray-200 overflow-hidden">
-                  <img 
-                    src={post.image_url} 
-                    alt={post.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-              <div className="p-6">
-                <div className="flex items-center text-sm text-gray-500 mb-2">
-                  <span>{new Date(post.created_at).toLocaleDateString('nl-NL')}</span>
-                  {post.category && (
-                    <span className="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
-                      {post.category}
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
-                  {post.title}
-                </h3>
-                <p className="text-gray-600 mb-4 line-clamp-3">
-                  {post.excerpt || post.content.substring(0, 150)}...
-                </p>
-                <Link 
-                  href={`/Blog/${post.id}`}
-                  className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors"
-                >
-                  Lees Meer
-                  <svg className="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
 
-      {/* Demo info */}
-      {dataSource === 'local' && (
-        <div className="mt-12 p-6 bg-blue-50 rounded-lg border border-blue-200">
-          <h3 className="text-lg font-semibold text-blue-900 mb-2">Demo Mode</h3>
-          <p className="text-blue-800 mb-4">
-            Je bekijkt momenteel demo data uit een lokaal JSON bestand. Om de volledige functionaliteit te ervaren:
-          </p>
-          <ol className="text-blue-800 list-decimal list-inside space-y-1">
-            <li>Maak een Supabase account aan op <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" className="underline">supabase.com</a></li>
-            <li>Voer het database schema uit uit <code className="bg-blue-100 px-1 rounded">database-schema.sql</code></li>
-            <li>Voeg je credentials toe aan <code className="bg-blue-100 px-1 rounded">.env.local</code></li>
-            <li>Herstart de development server</li>
-          </ol>
-        </div>
-      )}
+        {/* Posts Grid */}
+        {filteredPosts.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="text-8xl mb-6">🔍</div>
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Geen artikelen gevonden
+            </h3>
+            <p className="text-gray-600 mb-8">
+              {selectedCategory 
+                ? `Er zijn momenteel geen artikelen in de categorie "${selectedCategory}"`
+                : 'Er zijn momenteel geen artikelen beschikbaar.'
+              }
+            </p>
+            {selectedCategory && (
+              <button
+                onClick={() => setSelectedCategory('')}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-200"
+              >
+                Bekijk alle artikelen
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPosts.map((post) => (
+              <article key={post.id} className="group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100">
+                {post.image_url && (
+                  <div className="h-48 bg-gray-200 overflow-hidden">
+                    <img 
+                      src={post.image_url} 
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+                
+                <div className="p-6">
+                  {/* Category Badge */}
+                  {post.category && (
+                    <div className="mb-4">
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800">
+                        {post.category}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Title */}
+                  <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors duration-200 line-clamp-2">
+                    {post.title}
+                  </h2>
+                  
+                  {/* Excerpt */}
+                  <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">
+                    {post.excerpt || post.content.substring(0, 120)}...
+                  </p>
+                  
+                  {/* Meta Info */}
+                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                    <div className="flex items-center">
+                      <span className="mr-2">📅</span>
+                      {new Date(post.created_at).toLocaleDateString('nl-NL')}
+                    </div>
+                    {post.author && (
+                      <div className="flex items-center">
+                        <span className="mr-2">👤</span>
+                        {post.author}
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Read More Button */}
+                  <Link 
+                    href={`/Blog/${post.id}`}
+                    className="inline-flex items-center justify-center w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                  >
+                    📖 Lees Meer
+                    <span className="ml-2 group-hover:translate-x-1 transition-transform duration-200">
+                      →
+                    </span>
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+
+        {/* Data Source Info */}
+        {dataSource === 'local' && (
+          <div className="mt-16 text-center">
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 max-w-2xl mx-auto">
+              <h3 className="text-lg font-semibold text-blue-900 mb-2">🎨 Demo Mode Actief</h3>
+              <p className="text-blue-800 text-sm">
+                Je bekijkt momenteel demo content. Voor live artikelen en real-time updates, 
+                stel Supabase op zoals beschreven in de documentatie.
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

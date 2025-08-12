@@ -13,16 +13,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Next.js Blog & Admin Dashboard",
-  description: "Een complete Next.js website met database functionaliteit en authenticatie",
+  title: "UX Design Studio - Creëer Betekenisvolle Gebruikerservaringen",
+  description: "Ontdek de kunst van UX design met artikelen, case studies en design insights. Leer van experts en verbeter je design skills.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="nl">
-      <body className={`${geistSans.variable} ${geistMono.variable} bg-gray-50 min-h-screen`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} bg-white min-h-screen`}>
          <Header />
-         <main className="container mx-auto px-4 py-8">
+         <main className="pt-16 lg:pt-20">
            {children}
          </main>
       </body>

@@ -117,7 +117,7 @@ export default function Admin() {
             .from('blog_posts')
             .update({
               ...formData,
-              author: demoUser?.name || 'Admin' // Zorg dat author altijd is ingevuld
+              author: demoUser?.name || 'UX Designer' // Zorg dat author altijd is ingevuld
             })
             .eq('id', editingPost.id);
 
@@ -138,7 +138,7 @@ export default function Admin() {
             .from('blog_posts')
             .insert([{
               ...formData,
-              author: demoUser?.name || 'Admin' // Zorg dat author altijd is ingevuld
+              author: demoUser?.name || 'UX Designer' // Zorg dat author altijd is ingevuld
             }]);
 
           if (error) throw error;
@@ -147,7 +147,7 @@ export default function Admin() {
           const newPost = {
             ...formData,
             id: Date.now().toString(),
-            author: demoUser?.name || 'Admin', // Zorg dat author altijd is ingevuld
+            author: demoUser?.name || 'UX Designer', // Zorg dat author altijd is ingevuld
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           };
@@ -227,40 +227,45 @@ export default function Admin() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto px-4">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-          {demoMode && (
-            <div className="flex items-center mt-2">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800 mr-2">
-                Demo Mode
-              </span>
-              <span className="text-sm text-gray-600">
-                Welkom, {demoUser?.name || 'Demo User'}
-              </span>
-            </div>
-          )}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 mb-8 text-white">
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">UX Design Studio</h1>
+            <p className="text-purple-100 text-lg mb-4">
+              Beheer je UX design artikelen, case studies en design insights
+            </p>
+            {demoMode && (
+              <div className="flex items-center mt-2">
+                <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-yellow-400 text-yellow-900 mr-3">
+                  Demo Mode
+                </span>
+                <span className="text-purple-100">
+                  Welkom, {demoUser?.name || 'UX Designer'}
+                </span>
+              </div>
+            )}
+          </div>
+          <button
+            onClick={() => setShowForm(true)}
+            className="bg-white text-purple-600 px-6 py-3 rounded-xl hover:bg-purple-50 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl"
+          >
+            ✨ Nieuw Artikel
+          </button>
         </div>
-        <button
-          onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Nieuwe Post
-        </button>
       </div>
 
       {/* Demo mode info */}
       {demoMode && (
-        <div className="mb-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <h3 className="text-lg font-semibold text-blue-900 mb-2">Demo Mode Actief</h3>
+        <div className="mb-8 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
+          <h3 className="text-lg font-semibold text-blue-900 mb-2">🎨 Demo Mode Actief</h3>
           <p className="text-blue-800 text-sm">
             Je werkt momenteel in demo mode. Alle wijzigingen worden alleen lokaal opgeslagen en verdwijnen na het verversen van de pagina. 
             Voor permanente opslag, stel Supabase op zoals beschreven in de documentatie.
@@ -270,16 +275,16 @@ export default function Admin() {
 
       {/* Form */}
       {showForm && (
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-          <h2 className="text-xl font-semibold mb-4">
-            {editingPost ? 'Post Bewerken' : 'Nieuwe Post Toevoegen'}
+        <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            {editingPost ? '✏️ Artikel Bewerken' : '✨ Nieuw Artikel Toevoegen'}
           </h2>
           
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Titel *
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Titel van het Artikel *
                 </label>
                 <input
                   type="text"
@@ -287,54 +292,66 @@ export default function Admin() {
                   value={formData.title}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Bijv: '10 UX Principles voor Betere Conversies'"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Categorie
                 </label>
-                <input
-                  type="text"
+                <select
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                >
+                  <option value="">Selecteer categorie</option>
+                  <option value="UX Research">UX Research</option>
+                  <option value="UI Design">UI Design</option>
+                  <option value="User Testing">User Testing</option>
+                  <option value="Design Systems">Design Systems</option>
+                  <option value="Case Studies">Case Studies</option>
+                  <option value="Design Tools">Design Tools</option>
+                  <option value="Accessibility">Accessibility</option>
+                  <option value="Mobile UX">Mobile UX</option>
+                </select>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Samenvatting
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Samenvatting / Hook
               </label>
               <textarea
                 name="excerpt"
                 value={formData.excerpt}
                 onChange={handleInputChange}
                 rows="3"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Een pakkende samenvatting die lezers overtuigt om verder te lezen..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Inhoud *
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Inhoud van het Artikel *
               </label>
               <textarea
                 name="content"
                 value={formData.content}
                 onChange={handleInputChange}
                 required
-                rows="8"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows="12"
+                placeholder="Schrijf hier je volledige artikel. Je kunt markdown gebruiken voor opmaak..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all font-mono text-sm"
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Afbeelding URL
                 </label>
                 <input
@@ -342,12 +359,13 @@ export default function Admin() {
                   name="image_url"
                   value={formData.image_url}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="https://unsplash.com/photo-..."
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Auteur
                 </label>
                 <input
@@ -355,24 +373,25 @@ export default function Admin() {
                   name="author"
                   value={formData.author}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Jouw naam of pseudoniem"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
-            <div className="flex justify-end space-x-3 pt-4">
+            <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+                className="px-6 py-3 text-gray-600 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all duration-200 font-medium"
               >
                 Annuleren
               </button>
               <button
                 type="submit"
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl"
               >
-                {editingPost ? 'Bijwerken' : 'Toevoegen'}
+                {editingPost ? '📝 Bijwerken' : '🚀 Publiceren'}
               </button>
             </div>
           </form>
@@ -380,50 +399,64 @@ export default function Admin() {
       )}
 
       {/* Posts list */}
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">Blog Posts</h2>
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+        <div className="px-8 py-6 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+          <h2 className="text-2xl font-bold text-gray-900">📚 Jouw UX Artikelen</h2>
+          <p className="text-gray-600 mt-1">Beheer al je gepubliceerde content op één plek</p>
         </div>
         
         {posts.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Nog geen blog posts beschikbaar.</p>
+          <div className="text-center py-16">
+            <div className="text-6xl mb-4">📝</div>
+            <p className="text-gray-500 text-lg mb-2">Nog geen artikelen gepubliceerd</p>
+            <p className="text-gray-400">Begin met het schrijven van je eerste UX design artikel!</p>
           </div>
         ) : (
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-gray-100">
             {posts.map((post) => (
-              <div key={post.id} className="p-6 hover:bg-gray-50 transition-colors">
+              <div key={post.id} className="p-8 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-gray-600 mb-2">
-                      {post.excerpt || post.content.substring(0, 100)}...
-                    </p>
-                    <div className="flex items-center text-sm text-gray-500 space-x-4">
-                      <span>{new Date(post.created_at).toLocaleDateString('nl-NL')}</span>
+                    <div className="flex items-center gap-3 mb-3">
                       {post.category && (
-                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                        <span className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 px-3 py-1 rounded-full text-xs font-semibold">
                           {post.category}
                         </span>
                       )}
-                      {post.author && <span>Door: {post.author}</span>}
+                      <span className="text-sm text-gray-500">
+                        📅 {new Date(post.created_at).toLocaleDateString('nl-NL')}
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-gray-900 mb-3">
+                      {post.title}
+                    </h3>
+                    
+                    <p className="text-gray-600 mb-4 leading-relaxed">
+                      {post.excerpt || post.content.substring(0, 150)}...
+                    </p>
+                    
+                    <div className="flex items-center text-sm text-gray-500">
+                      {post.author && (
+                        <span className="flex items-center">
+                          👤 Door: <span className="font-medium ml-1">{post.author}</span>
+                        </span>
+                      )}
                     </div>
                   </div>
                   
-                  <div className="flex space-x-2 ml-4">
+                  <div className="flex space-x-3 ml-6">
                     <button
                       onClick={() => handleEdit(post)}
-                      className="px-3 py-1 text-blue-600 hover:text-blue-800 text-sm font-medium"
+                      className="px-4 py-2 text-purple-600 hover:text-purple-800 text-sm font-semibold hover:bg-purple-50 rounded-lg transition-all duration-200"
                     >
-                      Bewerken
+                      ✏️ Bewerken
                     </button>
                     <button
                       onClick={() => handleDelete(post.id)}
-                      className="px-3 py-1 text-red-600 hover:text-red-800 text-sm font-medium"
+                      className="px-4 py-2 text-red-600 hover:text-red-800 text-sm font-semibold hover:bg-red-50 rounded-lg transition-all duration-200"
                     >
-                      Verwijderen
+                      🗑️ Verwijderen
                     </button>
                   </div>
                 </div>
