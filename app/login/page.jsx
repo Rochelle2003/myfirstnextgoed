@@ -18,11 +18,17 @@ export default function Login() {
       setDemoMode(true);
     } else {
       // Check if user is already logged in
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session) {
-          router.push('/admin');
-        }
-      });
+      try {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session) {
+            router.push('/admin');
+          }
+        });
+      } catch (error) {
+        // Als er een error is, schakel over naar demo mode
+        console.warn('Supabase error, switching to demo mode:', error);
+        setDemoMode(true);
+      }
     }
   }, [router]);
 
@@ -32,10 +38,10 @@ export default function Login() {
     setError('');
 
     try {
-      if (demoMode) {
-        // Demo login
+      if (demoMode || !supabase) {
+        // Demo login - check verschillende opties
         if (email === 'demo@example.com' && password === 'demo123') {
-          // Simuleer succesvolle login
+          // Standaard demo gebruiker
           localStorage.setItem('demoUser', JSON.stringify({
             email: 'demo@example.com',
             name: 'Demo User',
@@ -43,7 +49,21 @@ export default function Login() {
           }));
           router.push('/admin');
         } else {
-          setError('Demo credentials: demo@example.com / demo123');
+          // Check of het een geregistreerde demo gebruiker is
+          const storedUsers = JSON.parse(localStorage.getItem('demoUsers') || '[]');
+          const user = storedUsers.find(u => u.email === email && u.password === password);
+          
+          if (user) {
+            // Demo gebruiker gevonden
+            localStorage.setItem('demoUser', JSON.stringify({
+              email: user.email,
+              name: user.name || 'Demo User',
+              role: 'user'
+            }));
+            router.push('/admin');
+          } else {
+            setError('Ongeldige inloggegevens. Gebruik demo@example.com / demo123 of registreer je eerst.');
+          }
         }
       } else if (supabase) {
         // Echte Supabase login
@@ -56,7 +76,8 @@ export default function Login() {
         router.push('/admin');
       }
     } catch (error) {
-      setError(error.message);
+      console.error('Login error:', error);
+      setError(error.message || 'Er is een fout opgetreden bij het inloggen.');
     } finally {
       setLoading(false);
     }
@@ -86,7 +107,7 @@ export default function Login() {
                 <span className="text-sm text-yellow-800 font-medium">Demo Mode</span>
               </div>
               <p className="text-xs text-yellow-700 mt-1">
-                Database niet beschikbaar. Gebruik demo credentials.
+                Database niet beschikbaar. Gebruik demo credentials of registreer je eerst.
               </p>
             </div>
           )}
@@ -137,10 +158,11 @@ export default function Login() {
           {/* Demo credentials info */}
           {demoMode && (
             <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Credentials:</h4>
+              <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Opties:</h4>
               <div className="text-xs text-blue-800 space-y-1">
-                <div><strong>Email:</strong> demo@example.com</div>
-                <div><strong>Wachtwoord:</strong> demo123</div>
+                <div><strong>Standaard Demo:</strong> demo@example.com / demo123</div>
+                <div><strong>Geregistreerde Gebruikers:</strong> Gebruik je eigen gegevens</div>
+                <div><strong>Nieuwe Gebruiker?</strong> <Link href="/register" className="underline">Registreer je eerst</Link></div>
               </div>
             </div>
           )}

@@ -11,15 +11,27 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [demoMode, setDemoMode] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        router.push('/admin');
+    // Check if Supabase is available
+    if (!supabase) {
+      setDemoMode(true);
+    } else {
+      // Check if user is already logged in
+      try {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (session) {
+            router.push('/admin');
+          }
+        });
+      } catch (error) {
+        // Als er een error is, schakel over naar demo mode
+        console.warn('Supabase error, switching to demo mode:', error);
+        setDemoMode(true);
       }
-    });
+    }
   }, [router]);
 
   const handleSubmit = async (e) => {
@@ -43,19 +55,47 @@ export default function Register() {
     }
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+      if (demoMode || !supabase) {
+        // Demo registratie - sla gebruiker op in localStorage
+        const newUser = {
+          email,
+          password,
+          name: email.split('@')[0], // Gebruik email prefix als naam
+          role: 'user',
+          createdAt: new Date().toISOString()
+        };
+        
+        // Haal bestaande gebruikers op en voeg nieuwe toe
+        const existingUsers = JSON.parse(localStorage.getItem('demoUsers') || '[]');
+        existingUsers.push(newUser);
+        localStorage.setItem('demoUsers', JSON.stringify(existingUsers));
+        
+        setSuccess('Demo registratie succesvol! Je kunt nu inloggen met je gegevens.');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        
+        // Redirect naar login na 2 seconden
+        setTimeout(() => {
+          router.push('/login');
+        }, 2000);
+      } else if (supabase) {
+        // Echte Supabase registratie
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+        });
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setSuccess('Account succesvol aangemaakt! Controleer je email om je account te bevestigen.');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
+        setSuccess('Account succesvol aangemaakt! Controleer je email om je account te bevestigen.');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+      }
     } catch (error) {
-      setError(error.message);
+      console.error('Registration error:', error);
+      setError(error.message || 'Er is een fout opgetreden bij het registreren.');
     } finally {
       setLoading(false);
     }
@@ -74,6 +114,21 @@ export default function Register() {
               log in op je bestaande account
             </Link>
           </p>
+          
+          {/* Demo mode indicator */}
+          {demoMode && (
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+              <div className="flex items-center">
+                <svg className="w-5 h-5 text-yellow-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
+                <span className="text-sm text-yellow-800 font-medium">Demo Mode</span>
+              </div>
+              <p className="text-xs text-yellow-700 mt-1">
+                Database niet beschikbaar. Registratie wordt gesimuleerd.
+              </p>
+            </div>
+          )}
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -141,6 +196,16 @@ export default function Register() {
               />
             </div>
           </div>
+
+          {/* Demo info */}
+          {demoMode && (
+            <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+              <h4 className="text-sm font-medium text-blue-900 mb-2">Demo Registratie</h4>
+              <p className="text-xs text-blue-800">
+                In demo mode wordt registratie gesimuleerd. Je kunt daarna inloggen met je ingevoerde gegevens.
+              </p>
+            </div>
+          )}
 
           <div>
             <button

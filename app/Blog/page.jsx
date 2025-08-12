@@ -16,17 +16,23 @@ export default function Blog() {
     try {
       if (supabase) {
         // Probeer Supabase te gebruiken
-        const { data, error } = await supabase
-          .from('blog_posts')
-          .select('*')
-          .order('created_at', { ascending: false });
+        try {
+          const { data, error } = await supabase
+            .from('blog_posts')
+            .select('*')
+            .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        
-        if (data && data.length > 0) {
-          setPosts(data);
-          setDataSource('supabase');
-        } else {
+          if (error) throw error;
+          
+          if (data && data.length > 0) {
+            setPosts(data);
+            setDataSource('supabase');
+          } else {
+            // Fallback naar lokale data
+            await fetchLocalData();
+          }
+        } catch (supabaseError) {
+          console.warn('Supabase error, falling back to local data:', supabaseError);
           // Fallback naar lokale data
           await fetchLocalData();
         }
@@ -35,7 +41,7 @@ export default function Blog() {
         await fetchLocalData();
       }
     } catch (error) {
-      console.error('Error fetching posts from Supabase:', error);
+      console.error('Error fetching posts:', error);
       // Fallback naar lokale data
       await fetchLocalData();
     } finally {

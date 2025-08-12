@@ -27,11 +27,23 @@ export default function Admin() {
 
   const checkAuth = async () => {
     if (supabase) {
-      // Echte Supabase authenticatie
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/login');
-        return;
+      try {
+        // Echte Supabase authenticatie
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+          router.push('/login');
+          return;
+        }
+      } catch (error) {
+        console.warn('Supabase auth error, switching to demo mode:', error);
+        // Als er een error is, schakel over naar demo mode
+        const storedUser = localStorage.getItem('demoUser');
+        if (!storedUser) {
+          router.push('/login');
+          return;
+        }
+        setDemoUser(JSON.parse(storedUser));
+        setDemoMode(true);
       }
     } else {
       // Demo mode authenticatie
@@ -49,25 +61,40 @@ export default function Admin() {
     try {
       if (supabase) {
         // Haal posts op uit Supabase
-        const { data, error } = await supabase
-          .from('blog_posts')
-          .select('*')
-          .order('created_at', { ascending: false });
+        try {
+          const { data, error } = await supabase
+            .from('blog_posts')
+            .select('*')
+            .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        setPosts(data || []);
+          if (error) throw error;
+          setPosts(data || []);
+        } catch (supabaseError) {
+          console.warn('Supabase error, falling back to local data:', supabaseError);
+          // Fallback naar lokale data
+          await fetchLocalData();
+        }
       } else {
         // Haal posts op uit lokale demo data
-        const response = await fetch('/demoData.json');
-        const data = await response.json();
-        setPosts(data.blog_posts || []);
+        await fetchLocalData();
       }
     } catch (error) {
       console.error('Error fetching posts:', error);
-      // Fallback naar lege array
-      setPosts([]);
+      // Fallback naar lokale data
+      await fetchLocalData();
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchLocalData = async () => {
+    try {
+      const response = await fetch('/demoData.json');
+      const data = await response.json();
+      setPosts(data.blog_posts || []);
+    } catch (error) {
+      console.error('Error fetching local data:', error);
+      setPosts([]);
     }
   };
 

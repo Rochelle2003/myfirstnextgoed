@@ -29,18 +29,26 @@ export default function Header() {
       });
     } catch (error) {
       console.error('Error checking session:', error);
+      // Als er een error is, schakel over naar demo mode
+      setDemoMode(true);
+      checkDemoSession();
     } finally {
       setLoading(false);
     }
   };
 
   const checkDemoSession = () => {
-    const storedUser = localStorage.getItem('demoUser');
-    if (storedUser) {
-      setSession(JSON.parse(storedUser));
-      setDemoMode(true);
+    try {
+      const storedUser = localStorage.getItem('demoUser');
+      if (storedUser) {
+        setSession(JSON.parse(storedUser));
+        setDemoMode(true);
+      }
+    } catch (error) {
+      console.error('Error checking demo session:', error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleLogout = async () => {
