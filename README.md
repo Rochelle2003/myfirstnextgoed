@@ -1,32 +1,33 @@
-# Next.js Blog Website
+# Blog App - Next.js + Supabase
 
-Een moderne, volledig functionele blog website gebouwd met Next.js 15, React 19, Supabase en Tailwind CSS.
+Een moderne blog applicatie gebouwd met Next.js 15, TypeScript, Tailwind CSS en Supabase voor authenticatie en database functionaliteiten.
 
 ## 🚀 Features
 
-- **Moderne UI/UX**: Gebouwd met Tailwind CSS voor een professionele uitstraling
-- **Authenticatie**: Veilige gebruikersaccounts met Supabase Auth
-- **Blog Management**: Volledig CRUD systeem voor blog posts
-- **Responsive Design**: Werkt perfect op alle apparaten
-- **SEO Optimized**: Server-side rendering voor betere zoekresultaten
-- **Database**: PostgreSQL database met Supabase
-- **Real-time Updates**: Live updates van content
+- **Authenticatie**: Volledige gebruikersregistratie en login met Supabase Auth
+- **CRUD Operaties**: Maak, lees, update en verwijder blog posts
+- **Dashboard**: Persoonlijk dashboard voor gebruikers
+- **Blog Systeem**: Publieke blog met categorie filtering
+- **Responsive Design**: Moderne UI gebouwd met Tailwind CSS
+- **TypeScript**: Volledig getypeerd voor betere developer experience
+- **Row Level Security**: Beveiligde database toegang met RLS policies
 
-## 🛠️ Technologieën
+## 🛠️ Tech Stack
 
-- **Frontend**: Next.js 15, React 19
+- **Frontend**: Next.js 15, React 18, TypeScript
 - **Styling**: Tailwind CSS
-- **Database**: Supabase (PostgreSQL)
-- **Authentication**: Supabase Auth
-- **Deployment**: Vercel (aanbevolen)
+- **Backend**: Supabase (PostgreSQL, Auth, Real-time)
+- **Database**: PostgreSQL met Row Level Security
+- **Deployment**: Vercel ready
 
 ## 📋 Vereisten
 
 - Node.js 18+ 
 - npm of yarn
 - Supabase account
+- PostgreSQL database (via Supabase)
 
-## 🚀 Installatie
+## 🔧 Installatie
 
 ### 1. Clone het project
 
@@ -41,23 +42,30 @@ cd myfirstnext
 npm install
 ```
 
-### 3. Supabase Setup
+### 3. Configureer environment variables
 
-1. Ga naar [supabase.com](https://supabase.com) en maak een account aan
-2. Maak een nieuw project aan
-3. Ga naar Settings > API en kopieer je project URL en anon key
-4. Maak een `.env.local` bestand aan in de root van je project:
+Maak een `.env.local` bestand aan in de root van het project:
 
 ```env
+# Supabase Configuration
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Database Configuration
+DATABASE_URL=your_database_connection_string
+
+# Auth Configuration
+NEXTAUTH_SECRET=your_nextauth_secret_key
+NEXTAUTH_URL=http://localhost:3000
 ```
 
 ### 4. Database Setup
 
-1. Ga naar je Supabase project dashboard
-2. Ga naar SQL Editor
-3. Kopieer en voer de inhoud van `database-schema.sql` uit
+Voer het SQL script uit in je Supabase SQL editor:
+
+```sql
+-- Zie database-schema.sql voor het volledige schema
+```
 
 ### 5. Start de development server
 
@@ -69,151 +77,169 @@ Open [http://localhost:3000](http://localhost:3000) in je browser.
 
 ## 🗄️ Database Schema
 
-De website gebruikt een `blog_posts` tabel met de volgende structuur:
+### Blog Posts Table
 
 ```sql
 CREATE TABLE blog_posts (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    title TEXT NOT NULL,
-    excerpt TEXT,
-    content TEXT NOT NULL,
-    category TEXT,
-    image_url TEXT,
-    author TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  content TEXT NOT NULL,
+  excerpt VARCHAR(500),
+  author VARCHAR(100) NOT NULL,
+  category VARCHAR(50) NOT NULL,
+  image_url TEXT,
+  read_time INTEGER DEFAULT 5,
+  featured BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
+
+### Profiles Table
+
+```sql
+CREATE TABLE public.profiles (
+  id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
+  full_name VARCHAR(100),
+  avatar_url TEXT,
+  role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'admin')),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ```
 
 ## 🔐 Authenticatie
 
-- **Registratie**: Gebruikers kunnen accounts aanmaken op `/register`
-- **Login**: Bestaande gebruikers kunnen inloggen op `/login`
-- **Admin Dashboard**: Ingelogde gebruikers hebben toegang tot `/admin`
+De applicatie gebruikt Supabase Auth voor:
 
-## 📝 Blog Functionaliteit
+- Gebruikersregistratie
+- Login/Logout
+- Session management
+- Row Level Security (RLS)
 
-### Voor Bezoekers
-- Bekijk alle blog posts op `/Blog`
-- Lees individuele posts op `/Blog/[id]`
-- Zoek en filter posts op categorie
+### RLS Policies
 
-### Voor Admins
-- Maak nieuwe blog posts aan
-- Bewerk bestaande posts
-- Verwijder posts
-- Beheer alle content
+- **Blog Posts**: Iedereen kan lezen, alleen geauthenticeerde gebruikers kunnen schrijven
+- **Profiles**: Gebruikers kunnen alleen hun eigen profiel lezen/bewerken
+- **Admin Access**: Admins hebben volledige toegang tot alle posts
 
-## 🎨 Customization
+## 📱 Pagina's
 
-### Styling Aanpassen
-- Bewerk `tailwind.config.mjs` voor kleuren en thema's
-- Pas componenten aan in `app/components/`
-- Wijzig globale stijlen in `app/globals.css`
+### Publieke Pagina's
+- **Home** (`/`): Welkomstpagina met featured posts
+- **Blog** (`/blog`): Blog overzicht met categorie filtering
+- **Login** (`/auth/login`): Inlogpagina
+- **Register** (`/auth/register`): Registratiepagina
 
-### Nieuwe Pagina's Toevoegen
-- Maak nieuwe mappen aan in `app/` voor nieuwe routes
-- Voeg navigatie toe in `app/components/Header.jsx`
+### Beveiligde Pagina's (Dashboard)
+- **Dashboard** (`/dashboard`): Overzicht van gebruikers posts
+- **New Post** (`/dashboard/posts/new`): Nieuwe post maken
+- **My Posts** (`/dashboard/posts`): Alle posts van de gebruiker
+- **Admin Panel** (`/dashboard/admin`): Admin functionaliteiten (alleen voor admins)
 
-### Database Uitbreiden
-- Voeg nieuwe tabellen toe via Supabase SQL Editor
-- Update de Supabase client code voor nieuwe functionaliteit
+## 🎨 Styling
+
+De applicatie gebruikt Tailwind CSS voor:
+
+- Responsive design
+- Moderne UI componenten
+- Consistent kleurenschema
+- Hover effecten en transities
 
 ## 🚀 Deployment
 
-### Vercel (Aanbevolen)
+### Vercel
 
 1. Push je code naar GitHub
 2. Verbind je repository met Vercel
-3. Voeg je environment variables toe
+3. Configureer environment variables in Vercel dashboard
 4. Deploy!
 
-### Andere Platforms
+### Environment Variables in Vercel
 
-De website kan ook gedeployed worden op:
-- Netlify
-- Railway
-- DigitalOcean App Platform
-- AWS Amplify
+Zorg ervoor dat je deze environment variables instelt in je Vercel dashboard:
 
-## 🔧 Development Scripts
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `DATABASE_URL`
+- `NEXTAUTH_SECRET`
+- `NEXTAUTH_URL`
+
+## 🔒 Beveiliging
+
+- **Row Level Security (RLS)**: Database niveau beveiliging
+- **Authenticatie**: Supabase Auth met JWT tokens
+- **Authorization**: Role-based access control
+- **Input Validation**: Client en server-side validatie
+- **SQL Injection Protection**: Supabase query builder
+
+## 📚 API Endpoints
+
+De applicatie gebruikt Supabase client voor alle database operaties:
+
+- **Posts**: `supabase.from('blog_posts')`
+- **Profiles**: `supabase.from('profiles')`
+- **Auth**: `supabase.auth.*`
+
+## 🧪 Testing
 
 ```bash
-npm run dev          # Start development server
-npm run build        # Build voor productie
-npm run start        # Start productie server
-npm run lint         # Run ESLint
+# Run tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:coverage
 ```
 
-## 📱 Responsive Design
+## 📝 Scripts
 
-De website is volledig responsive en werkt op:
-- Desktop computers
-- Tablets
-- Mobiele telefoons
-- Alle moderne browsers
+```bash
+# Development
+npm run dev
 
-## 🔒 Security Features
+# Build
+npm run build
 
-- Row Level Security (RLS) in Supabase
-- Geauthenticeerde gebruikers kunnen alleen hun eigen content beheren
-- Publieke lees toegang voor blog posts
-- Veilige authenticatie met Supabase Auth
+# Start production server
+npm start
 
-## 🐛 Troubleshooting
+# Lint
+npm run lint
 
-### Veelvoorkomende Problemen
-
-1. **Supabase verbinding werkt niet**
-   - Controleer je environment variables
-   - Zorg dat je project URL en key correct zijn
-
-2. **Database errors**
-   - Voer het database schema opnieuw uit
-   - Controleer je RLS policies
-
-3. **Build errors**
-   - Verwijder `node_modules` en `package-lock.json`
-   - Run `npm install` opnieuw
-
-### Support
-
-Voor vragen of problemen:
-1. Controleer de console voor error messages
-2. Bekijk de Supabase logs
-3. Controleer de browser developer tools
-
-## 📈 Toekomstige Verbeteringen
-
-- [ ] Commentaar systeem
-- [ ] Like/dislike functionaliteit
-- [ ] Gebruikersprofielen
-- [ ] Categorieën beheer
-- [ ] Zoekfunctionaliteit
-- [ ] Newsletter integratie
-- [ ] Social media sharing
-- [ ] Analytics dashboard
+# Type check
+npm run type-check
+```
 
 ## 🤝 Bijdragen
 
-Bijdragen zijn welkom! Voel je vrij om:
-- Issues te melden
-- Feature requests in te dienen
-- Pull requests te maken
-- Documentatie te verbeteren
+1. Fork het project
+2. Maak een feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit je wijzigingen (`git commit -m 'Add some AmazingFeature'`)
+4. Push naar de branch (`git push origin feature/AmazingFeature`)
+5. Open een Pull Request
 
 ## 📄 Licentie
 
-Dit project is open source en beschikbaar onder de MIT licentie.
+Dit project is gelicenseerd onder de MIT License - zie het [LICENSE](LICENSE) bestand voor details.
 
-## 🙏 Dankwoord
+## 🆘 Support
 
-- Next.js team voor het geweldige framework
-- Supabase team voor de database oplossing
-- Tailwind CSS team voor de styling utilities
-- Alle contributors en de open source community
+Voor vragen of problemen:
+
+1. Check de [Issues](../../issues) sectie
+2. Maak een nieuwe issue aan
+3. Neem contact op via [email]
+
+## 🙏 Dankbetuigingen
+
+- [Next.js](https://nextjs.org/) - React framework
+- [Supabase](https://supabase.com/) - Backend as a Service
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [Vercel](https://vercel.com/) - Deployment platform
 
 ---
 
-**Gebouwd met ❤️ en Next.js** 
-
+Gebouwd met ❤️ door [Jouw Naam]
