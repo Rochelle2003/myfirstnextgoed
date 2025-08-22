@@ -1,12 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../Lib/supabaseClient';
+import axios from 'axios';
 import Link from 'next/link';
 
 export default function Blog() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [dataSource, setDataSource] = useState('local'); // 'local' of 'supabase'
+  const [dataSource, setDataSource] = useState('local'); // 'local', 'online', 'supabase'
   const [selectedCategory, setSelectedCategory] = useState('');
 
   useEffect(() => {
@@ -15,8 +16,8 @@ export default function Blog() {
 
   const fetchPosts = async () => {
     try {
-      if (supabase) {
-        // Probeer Supabase te gebruiken
+      // Probeer eerst Supabase (alleen als credentials beschikbaar zijn)
+      if (supabase && process.env.NEXT_PUBLIC_SUPABASE_URL) {
         try {
           const { data, error } = await supabase
             .from('blog_posts')
@@ -28,26 +29,47 @@ export default function Blog() {
           if (data && data.length > 0) {
             setPosts(data);
             setDataSource('supabase');
-          } else {
-            // Fallback naar lokale data
-            await fetchLocalData();
+            return;
           }
         } catch (supabaseError) {
-          console.warn('Supabase error, falling back to local data:', supabaseError);
-          // Fallback naar lokale data
-          await fetchLocalData();
+          console.warn('Supabase error, trying online JSON:', supabaseError);
         }
-      } else {
-        // Supabase niet beschikbaar, gebruik lokale data
-        await fetchLocalData();
       }
+
+      // Probeer online JSON bestand
+      try {
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10');
+        const onlinePosts = response.data.map(post => ({
+          id: post.id.toString(),
+          title: post.title,
+          content: post.body,
+          excerpt: post.body.substring(0, 100) + '...',
+          author: 'Online Author',
+          category: getRandomCategory(),
+          created_at: new Date().toISOString(),
+          image_url: `https://picsum.photos/500/300?random=${post.id}`
+        }));
+        
+        setPosts(onlinePosts);
+        setDataSource('online');
+        return;
+      } catch (onlineError) {
+        console.warn('Online JSON error, falling back to local data:', onlineError);
+      }
+
+      // Fallback naar lokale data
+      await fetchLocalData();
     } catch (error) {
       console.error('Error fetching posts:', error);
-      // Fallback naar lokale data
       await fetchLocalData();
     } finally {
       setLoading(false);
     }
+  };
+
+  const getRandomCategory = () => {
+    const categories = ['UX Research', 'UI Design', 'User Testing', 'Design Systems', 'Case Studies', 'Design Tools', 'Accessibility', 'Mobile UX'];
+    return categories[Math.floor(Math.random() * categories.length)];
   };
 
   const fetchLocalData = async () => {
@@ -296,6 +318,48 @@ export default function Blog() {
                 <Link 
                   href="/admin"
                   className="inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-all duration-300"
+                >
+                  🚀 Ga naar Admin Dashboard
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {dataSource === 'online' && (
+          <div className="mt-20 text-center">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-3xl p-8 max-w-3xl mx-auto shadow-lg">
+              <div className="text-4xl mb-4">🌐</div>
+              <h3 className="text-2xl font-bold text-green-900 mb-3">Online Data Mode</h3>
+              <p className="text-green-800 text-lg leading-relaxed">
+                Je bekijkt momenteel content van een online JSON API (JSONPlaceholder). Dit toont aan dat 
+                de applicatie ook externe data bronnen kan gebruiken naast lokale en database data.
+              </p>
+              <div className="mt-6">
+                <Link 
+                  href="/admin"
+                  className="inline-flex items-center bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-700 transition-all duration-300"
+                >
+                  🚀 Ga naar Admin Dashboard
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {dataSource === 'supabase' && (
+          <div className="mt-20 text-center">
+            <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-3xl p-8 max-w-3xl mx-auto shadow-lg">
+              <div className="text-4xl mb-4">🚀</div>
+              <h3 className="text-2xl font-bold text-purple-900 mb-3">Live Database Mode</h3>
+              <p className="text-purple-800 text-lg leading-relaxed">
+                Je bekijkt momenteel live content uit je Supabase database! Alle CRUD operaties 
+                worden real-time gesynchroniseerd en opgeslagen in de cloud.
+              </p>
+              <div className="mt-6">
+                <Link 
+                  href="/admin"
+                  className="inline-flex items-center bg-purple-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-purple-700 transition-all duration-300"
                 >
                   🚀 Ga naar Admin Dashboard
                 </Link>

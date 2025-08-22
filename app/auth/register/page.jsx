@@ -20,6 +20,13 @@ export default function Register() {
     setSuccess('');
 
     try {
+      // Check if Supabase is properly configured
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+        setError('Supabase niet geconfigureerd. Maak een .env.local bestand aan met je Supabase credentials.');
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
