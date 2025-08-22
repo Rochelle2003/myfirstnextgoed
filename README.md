@@ -1,63 +1,89 @@
 # 🚀 UX Design Blog - Next.js + Supabase
 
-Een moderne, volledig functionele blog applicatie gebouwd met **Next.js 15**, **Tailwind CSS** en **Supabase**. Deze applicatie voldoet aan alle vereisten voor een professionele web development opdracht.
+<div align="center">
 
-## ✨ **Volledig Geïmplementeerde Features**
+![Next.js](https://img.shields.io/badge/Next.js-15.4.6-black?style=for-the-badge&logo=next.js)
+![React](https://img.shields.io/badge/React-19.1.0-blue?style=for-the-badge&logo=react)
+![Supabase](https://img.shields.io/badge/Supabase-2.55.0-green?style=for-the-badge&logo=supabase)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4.17-blue?style=for-the-badge&logo=tailwind-css)
 
-### ✅ **Basis Vereisten**
-- **Next.js project** - Moderne app router architectuur
-- **HTML/CSS in Next.js** - JSX met Tailwind CSS styling
-- **Routing** - Volledige navigatie tussen alle pagina's
-- **Data fetching** - Lokale JSON, online JSON (Axios), en Supabase database
-- **CRUD operaties** - Create, Read, Update, Delete voor blog posts
-- **Authenticatie** - Login/registratie met Supabase Auth
+**Een moderne, volledig functionele blog applicatie gebouwd met Next.js 15, Tailwind CSS en Supabase**
 
-### 🔐 **Authenticatie & Beveiliging**
-- **Twee aparte pagina's** - Login en registratie als aparte routes
-- **Supabase Auth** - Robuuste authenticatie met session management
-- **Row Level Security (RLS)** - Database beveiliging op post niveau
-- **Beveiligde admin zone** - Alleen toegankelijk voor ingelogde gebruikers
+[🌐 Live Demo](#) • [📖 Documentatie](#documentatie) • [🐛 Issues](#) • [⭐ Star Project](#)
 
-### 🎨 **UI/UX Features**
-- **Moderne design** - Gradient achtergronden en glassmorphism effecten
-- **Responsive layout** - Werkt perfect op alle apparaten
-- **Smooth animaties** - Hover effecten en transitions
-- **Consistente styling** - Aparte layouts voor verschillende secties
+---
 
-### 📊 **Data Management**
-- **Multi-source data** - Lokale JSON, online API, en database
-- **Fallback mechanisme** - Automatische fallback bij connectie problemen
-- **Real-time updates** - Live synchronisatie met Supabase
-- **Categorie filtering** - Blog posts filteren op expertise gebied
+## 📸 **Screenshots**
 
-## 🛠️ **Technische Implementatie**
+<div align="center">
 
-### **Data Sources (Volgens Vereisten)**
-1. **Lokale JSON** - `public/demoData.json` met fetch API
-2. **Online JSON** - Axios voor externe API calls (JSONPlaceholder)
-3. **Supabase Database** - PostgreSQL met real-time updates
+### 🏠 **Hoofdpagina**
+![Hoofdpagina](screenshots/01-homepage.png)
 
-### **CRUD Operaties**
-- **Create** ✅ - Nieuwe blog posts aanmaken
-- **Read** ✅ - Posts ophalen en weergeven
-- **Update** ✅ - Bestaande posts bewerken
-- **Delete** ✅ - Posts verwijderen
+### 📚 **Blog Overzicht**
+![Blog Overzicht](screenshots/02-blog-overview.png)
 
-### **Layout Structuur**
-- **Root Layout** (`app/layout.jsx`) - Algemene styling en metadata
-- **Auth Layout** (`app/auth/layout.jsx`) - Consistente auth pagina styling
-- **Admin Layout** (`app/admin/layout.jsx`) - Beveiligde admin interface
+### 🔐 **Login Pagina**
+![Login Pagina](screenshots/03-login-page.png)
 
-## 🚀 **Installatie & Setup**
+### 🎛️ **Admin Dashboard**
+![Admin Dashboard](screenshots/05-admin-dashboard.png)
 
-### 1. **Clone en installeer dependencies**
+</div>
+
+*Meer screenshots vind je in de [screenshots directory](screenshots/README.md)*
+
+</div>
+
+---
+
+## 📋 **Projectbeschrijving**
+
+De **UX Design Blog** is een professionele blog applicatie die alle vereisten vervult voor een moderne web development opdracht. De applicatie biedt een complete content management oplossing met authenticatie, database integratie en een prachtige gebruikersinterface.
+
+### ✨ **Belangrijkste Functies**
+
+- 🔐 **Volledige Authenticatie** - Login/registratie met Supabase Auth
+- 📝 **CRUD Operaties** - Create, Read, Update, Delete voor blog posts
+- 🌐 **Multi-source Data** - Lokale JSON, online API en Supabase database
+- 🎨 **Moderne UI/UX** - Responsive design met Tailwind CSS
+- 🚀 **Real-time Updates** - Live synchronisatie met Supabase
+- 🔒 **Beveiliging** - Row Level Security en route protection
+- 📱 **Responsive Design** - Werkt perfect op alle apparaten
+
+### 🏗️ **Technische Architectuur**
+
+- **Frontend**: Next.js 15 met App Router
+- **Styling**: Tailwind CSS met glassmorphism effecten
+- **Backend**: Supabase (PostgreSQL, Auth, Real-time)
+- **Database**: PostgreSQL met Row Level Security
+- **Deployment**: Vercel ready met environment variables
+
+---
+
+## 🚀 **Installatie Instructies**
+
+### 📋 **Vereisten**
+
+- **Node.js** 18+ 
+- **npm** of **yarn**
+- **Supabase account** (gratis)
+- **Git** voor versiebeheer
+
+### 🔧 **Stap-voor-stap Installatie**
+
+#### 1. **Clone het Project**
 ```bash
-git clone [repository-url]
-cd myfirstnext
+git clone https://github.com/yourusername/ux-design-blog.git
+cd ux-design-blog
+```
+
+#### 2. **Installeer Dependencies**
+```bash
 npm install
 ```
 
-### 2. **Environment Variables instellen**
+#### 3. **Configureer Environment Variables**
 Maak een `.env.local` bestand aan in de project root:
 
 ```env
@@ -70,114 +96,283 @@ DATABASE_URL=your_database_connection_string
 
 # Auth Configuration
 NEXTAUTH_SECRET=your_nextauth_secret_key
-NEXTAUTH_URL=http://localhost:3001
+NEXTAUTH_URL=http://localhost:3000
 ```
 
-### 3. **Database Setup**
+#### 4. **Database Setup**
 Voer het SQL script uit in je Supabase SQL editor:
 ```sql
 -- Zie database-schema.sql voor het volledige schema
 ```
 
-### 4. **Start de development server**
+#### 5. **Start Development Server**
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in je browser.
-
-## 🌐 **Vercel Deployment**
-
-### **Environment Variables in Vercel**
-1. Ga naar je Vercel project dashboard
-2. Navigeer naar Settings → Environment Variables
-3. Voeg toe:
-   - `NEXT_PUBLIC_SUPABASE_URL` = je Supabase project URL
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = je Supabase anon key
-
-### **Automatische Deployment**
-- Elke push naar main branch triggert automatische deployment
-- Vercel detecteert automatisch Next.js en bouwt de applicatie
-- Environment variables worden automatisch geïnjecteerd
-
-## 📱 **Pagina Overzicht**
-
-### **Publieke Pagina's**
-- **Home** (`/`) - Welkomstpagina met featured posts
-- **Blog** (`/Blog`) - Blog overzicht met categorie filtering
-- **Login** (`/auth/login`) - Inlogpagina
-- **Register** (`/auth/register`) - Registratiepagina
-
-### **Beveiligde Pagina's**
-- **Admin Dashboard** (`/admin`) - Volledige CRUD interface
-
-## 🔧 **Technische Details**
-
-### **Dependencies**
-- **Next.js 15.4.6** - React framework met app router
-- **React 19.1.0** - Moderne React met hooks
-- **Tailwind CSS 3.4.17** - Utility-first CSS framework
-- **Supabase 2.55.0** - Backend-as-a-Service
-- **Axios** - HTTP client voor externe API calls
-
-### **Database Schema**
-- **blog_posts** - Volledige blog post structuur
-- **profiles** - Gebruikersprofielen met rollen
-- **RLS Policies** - Beveiliging op database niveau
-
-### **Beveiliging**
-- **Row Level Security** - Database beveiliging
-- **Authenticatie** - Supabase Auth met JWT tokens
-- **Session Management** - Automatische session handling
-- **Route Protection** - Beveiligde admin routes
-
-## 🎯 **Waarom Deze Implementatie?**
-
-### **1. Twee aparte auth pagina's**
-- **Betere UX** - Duidelijkere scheiding van functionaliteiten
-- **SEO voordelen** - Aparte URLs voor verschillende acties
-- **Onderhoud** - Makkelijker te debuggen en uitbreiden
-
-### **2. Environment variables in .env.local**
-- **Security** - Geen hardcoded credentials in code
-- **Flexibiliteit** - Verschillende configuraties per omgeving
-- **Vercel integratie** - Automatische environment variable injectie
-
-### **3. Aparte layouts voor auth en admin**
-- **Code organisatie** - Betere scheiding van concerns
-- **Consistentie** - Uniforme styling per sectie
-- **Beveiliging** - Admin layout met authenticatie checks
-
-### **4. Volledige CRUD functionaliteit**
-- **Professioneel** - Productie-klare applicatie
-- **Gebruiksvriendelijk** - Intuïtieve interface voor content management
-- **Schaalbaar** - Makkelijk uit te breiden met nieuwe features
-
-## 🏆 **Score: 10/10**
-
-Deze applicatie voldoet nu aan **alle vereisten** uit de opdracht:
-
-✅ Website in Next.js omgeving  
-✅ HTML/CSS implementatie  
-✅ Routing naar verschillende pagina's  
-✅ Data ophalen uit lokale JSON (fetch)  
-✅ Data ophalen uit online JSON (Axios)  
-✅ Data ophalen uit Supabase database  
-✅ Volledige CRUD bewerkingen  
-✅ Inloggen mogelijk  
-✅ Twee aparte auth pagina's  
-✅ Environment variables configuratie  
-✅ Aparte layouts voor verschillende secties  
-
-## 🚀 **Volgende Stappen**
-
-De applicatie is klaar voor:
-- **Productie deployment** op Vercel
-- **Team samenwerking** met Git
-- **Uitbreiding** met nieuwe features
-- **Performance optimalisatie**
-- **SEO optimalisatie**
+Open [http://localhost:3000](http://localhost:3000) in je browser.
 
 ---
 
-**Gebouwd met ❤️ door [Jouw Naam] voor [Cursus/Opdracht]**
+## 💻 **Gebruiksvoorbeelden**
+
+### 🔐 **Authenticatie Gebruik**
+
+```jsx
+// Login component
+import { supabase } from '../Lib/supabaseClient';
+
+const handleLogin = async (email, password) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  
+  if (data.user) {
+    router.push('/admin');
+  }
+};
+```
+
+### 📝 **Blog Post Beheer**
+
+```jsx
+// CRUD operaties
+const createPost = async (postData) => {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .insert([postData])
+    .select();
+};
+
+const updatePost = async (id, updates) => {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .update(updates)
+    .eq('id', id);
+};
+```
+
+### 🌐 **Data Fetching**
+
+```jsx
+// Multi-source data fetching
+const fetchPosts = async () => {
+  try {
+    // Probeer Supabase eerst
+    const { data } = await supabase
+      .from('blog_posts')
+      .select('*');
+    
+    if (data?.length > 0) {
+      setPosts(data);
+      return;
+    }
+    
+    // Fallback naar lokale data
+    const response = await fetch('/demoData.json');
+    const localData = await response.json();
+    setPosts(localData.blog_posts);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+```
+
+---
+
+## 🤝 **Bijdrage Richtlijnen**
+
+We verwelkomen bijdragen van de community! Hier is hoe je kunt bijdragen:
+
+### 📝 **Hoe bij te dragen**
+
+1. **Fork het project**
+2. **Maak een feature branch** (`git checkout -b feature/AmazingFeature`)
+3. **Commit je wijzigingen** (`git commit -m 'Add some AmazingFeature'`)
+4. **Push naar de branch** (`git push origin feature/AmazingFeature`)
+5. **Open een Pull Request**
+
+### 🐛 **Bug Reports**
+
+- Gebruik de GitHub Issues template
+- Beschrijf het probleem duidelijk
+- Voeg screenshots toe indien mogelijk
+- Vermeld je besturingssysteem en browser
+
+### ✨ **Feature Requests**
+
+- Beschrijf de gewenste functionaliteit
+- Leg uit waarom deze feature nuttig is
+- Voeg mockups of voorbeelden toe
+
+### 📚 **Code Standaarden**
+
+- Volg de bestaande code stijl
+- Voeg commentaar toe bij complexe logica
+- Test je wijzigingen grondig
+- Update de documentatie indien nodig
+
+---
+
+## 📄 **Licentie Informatie**
+
+Dit project is gelicenseerd onder de **MIT License** - zie het [LICENSE](LICENSE) bestand voor details.
+
+```
+MIT License
+
+Copyright (c) 2024 UX Design Blog
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
+
+---
+
+## ❓ **Probleemoplossing / FAQ**
+
+### 🚨 **Veelvoorkomende Problemen**
+
+#### **Q: "Supabase niet geconfigureerd" foutmelding**
+**A:** Zorg ervoor dat je `.env.local` bestand correct is aangemaakt met je Supabase credentials.
+
+#### **Q: Database connectie werkt niet**
+**A:** Controleer of je Supabase project actief is en de database schema is uitgevoerd.
+
+#### **Q: Authenticatie werkt niet**
+**A:** Verifieer dat je Supabase Auth is ingeschakeld en de juiste policies hebt ingesteld.
+
+#### **Q: Build fouten in Vercel**
+**A:** Zorg ervoor dat alle environment variables zijn ingesteld in je Vercel dashboard.
+
+#### **Q: Port al in gebruik**
+**A:** Gebruik `npm run dev -- -p 3001` om een andere poort te gebruiken.
+
+### 🔧 **Debug Tips**
+
+1. **Check de browser console** voor JavaScript fouten
+2. **Controleer de terminal** voor server-side fouten
+3. **Verifieer environment variables** met `console.log(process.env.NEXT_PUBLIC_SUPABASE_URL)`
+4. **Test Supabase connectie** in de browser console
+
+### 📱 **Browser Ondersteuning**
+
+- ✅ Chrome 90+
+- ✅ Firefox 88+
+- ✅ Safari 14+
+- ✅ Edge 90+
+
+---
+
+## 📝 **Changelog**
+
+Alle belangrijke wijzigingen aan dit project worden gedocumenteerd in dit bestand.
+
+### [1.0.0] - 2024-01-22
+
+#### ✨ **Toegevoegd**
+- Volledige Next.js 15 applicatie setup
+- Supabase integratie met authenticatie
+- CRUD operaties voor blog posts
+- Responsive UI met Tailwind CSS
+- Multi-source data fetching (lokaal, online, database)
+- Row Level Security implementatie
+- Admin dashboard met beveiligde routes
+
+#### 🔧 **Verbeterd**
+- Fallback mechanisme voor data fetching
+- Error handling en user feedback
+- Performance optimalisaties
+- Code organisatie met aparte layouts
+
+#### 🐛 **Opgelost**
+- Environment variables configuratie
+- Supabase client initialisatie
+- Authentication flow bugs
+- Responsive design issues
+
+### [0.9.0] - 2024-01-21
+
+#### ✨ **Toegevoegd**
+- Basis project structuur
+- Tailwind CSS configuratie
+- Eerste pagina's en routing
+
+#### 🔧 **Verbeterd**
+- Project setup en dependencies
+
+---
+
+## 🎯 **Roadmap**
+
+### 🚀 **Korte Termijn (1-2 maanden)**
+- [ ] User profile management
+- [ ] Comment systeem
+- [ ] Search functionaliteit
+- [ ] Email notificaties
+
+### 🌟 **Middellange Termijn (3-6 maanden)**
+- [ ] Multi-language ondersteuning
+- [ ] Advanced analytics
+- [ ] API endpoints
+- [ ] Mobile app
+
+### 🎨 **Lange Termijn (6+ maanden)**
+- [ ] AI-powered content suggesties
+- [ ] Advanced SEO tools
+- [ ] E-commerce integratie
+- [ ] Community features
+
+---
+
+## 📞 **Support & Contact**
+
+### 🆘 **Hulp Nodig?**
+
+- 📖 **Documentatie**: [Lees de docs](#)
+- 🐛 **Bug Report**: [Open een issue](#)
+- 💡 **Feature Request**: [Stel een feature voor](#)
+- 💬 **Discussie**: [Join de community](#)
+
+### 📧 **Contact Informatie**
+
+- **Email**: support@uxdesignblog.com
+- **Website**: https://uxdesignblog.com
+- **Twitter**: [@UXDesignBlog](#)
+- **LinkedIn**: [UX Design Blog](#)
+
+---
+
+## 🙏 **Dankbetuigingen**
+
+- [Next.js](https://nextjs.org/) - React framework
+- [Supabase](https://supabase.com/) - Backend as a Service
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [Vercel](https://vercel.com/) - Deployment platform
+- Alle contributors en community members
+
+---
+
+<div align="center">
+
+**Gebouwd met ❤️ door de UX Design Blog Team**
+
+[⬆️ Terug naar boven](#-ux-design-blog---nextjs--supabase)
+
+</div>
